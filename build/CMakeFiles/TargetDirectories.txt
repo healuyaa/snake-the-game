@@ -1,4 +1,0 @@
-C:/project/snake_the_game/build/CMakeFiles/snake-the-game.dir
-C:/project/snake_the_game/build/CMakeFiles/PACKAGE.dir
-C:/project/snake_the_game/build/CMakeFiles/ALL_BUILD.dir
-C:/project/snake_the_game/build/CMakeFiles/ZERO_CHECK.dir
