@@ -200,7 +200,7 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
                 window.close();
                 return;
             }
-
+            //---------------------Event Keyboard---------------------
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::W) {
                     currentDirection = Up;
@@ -211,9 +211,11 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
                 } else if (event.key.code == sf::Keyboard::D) {
                     currentDirection = Right;
                 }
-            }  
+            }
+            //---------------------Event Keyboard---------------------  
         }
 
+        //---------------------Move hero---------------------
         if (currentDirection == Left) {
             hero.MoveLeft(sprite_hero);
             last_dir_left = true;
@@ -225,7 +227,9 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
         } else if (currentDirection == Down) {
             hero.MoveDown(sprite_hero);
         }
+        //---------------------Move hero---------------------
 
+        //---------------------Animation Objects---------------------
         if(last_dir_left) {
             if(current_frame % 4 == 0) 
                 hero.CircleSpritesA(sprite_hero);
@@ -251,12 +255,15 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
             if(current_frame % 5 == 0)
                 pharaon_snake.CircleSpritesD(sprite_pharaon_snake);
         }
+        //---------------------Animation Objects---------------------
 
+        //---------------------Collision hero with food---------------------
         if(food_s.CheckCollision(sprite_hero, sprite_food)) {          
             food_s.LoadFoodSprite(sprite_food, textures);
         }
+        //---------------------Collision hero with food---------------------
 
-
+        //---------------------Draw objects---------------------
         window.clear(sf::Color(0, 128, 0));
 
         window.draw(sprite_hero);
@@ -266,8 +273,9 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
         window.draw(sprite_pharaon_snake);
 
         window.display();
+        //---------------------Draw objects---------------------
 
-        current_frame == 49 ? current_frame = 0 : current_frame++;
+        current_frame == 49 ? current_frame = 0 : current_frame++; // update animations timer
     }
 }
 
