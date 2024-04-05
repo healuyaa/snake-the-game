@@ -7,18 +7,22 @@ struct Textures {
     sf::Texture steam_icon;
     sf::Texture discord_icon;
 
-    sf::Texture snake_mooves;
+    sf::Texture snake;
     
     sf::Texture food;
+
+    sf::Texture small_pink_snake;
+    sf::Texture small_green_snake;
+    sf::Texture small_pharaon_snake;
 };
 
-class Loader {
+class ILoader {
     public:
     virtual void LoadTexturesFromFile(Textures &textures) = 0;
     virtual void SmoothTextures(Textures &textures) = 0;
 };
 
-class Icons : public Loader {
+class Icons : public ILoader {
     public:
     void LoadTexturesFromFile(Textures &textures) override {
         if (!textures.github_icon.loadFromFile(github_icon_path)) {
@@ -49,24 +53,24 @@ class Icons : public Loader {
     std::string discord_icon_path = "../../assets/icons/discord25.png";
 };
 
-class Snake : public Loader {
+class Snake : public ILoader {
     public:
     void LoadTexturesFromFile(Textures& textures) override {
-        if(!textures.snake_mooves.loadFromFile(snakes)) {
+        if(!textures.snake.loadFromFile(snakes_path)) {
             std::cout << "Err load icon: snake_moove\n";
             return;
         }
     }
 
     void SmoothTextures(Textures &textures) override {
-        textures.snake_mooves.setSmooth(true);
+        textures.snake.setSmooth(true);
     }
 
     private:
-    std::string snakes = "../../assets/snakes/snakes.png";
+    std::string snakes_path = "../../assets/snakes/snake-hero.png";
 };
 
-class Food : public Loader {
+class Food : public ILoader {
     public:
 
     void LoadTexturesFromFile(Textures& textures) override {
@@ -77,9 +81,40 @@ class Food : public Loader {
     }
 
     void SmoothTextures(Textures &textures) override {
-        textures.snake_mooves.setSmooth(true);
+        textures.food.setSmooth(true);
     }
 
     private:
     std::string food_path = "../../assets/food/food.png";
+};
+
+class SmallSnakes : public ILoader {
+    public:
+    void LoadTexturesFromFile(Textures& textures) override {
+        if(!textures.small_pink_snake.loadFromFile(small_pink_snake_path)) {
+            std::cout << "Err load icon: small_pink_snake\n";
+            return;
+        }
+
+        if(!textures.small_green_snake.loadFromFile(small_green_snake_path)) {
+            std::cout << "Err load icon: small_green_snake\n";
+            return;
+        }
+
+        if(!textures.small_pharaon_snake.loadFromFile(small_pharaon_snake_path)) {
+            std::cout << "Err load icon: small_pharaon_snake\n";
+            return;
+        }
+    }
+
+    void SmoothTextures(Textures& textures) override {
+        textures.small_pink_snake.setSmooth(true);
+        textures.small_green_snake.setSmooth(true);
+        textures.small_pharaon_snake.setSmooth(true);
+    }
+
+    private:
+    std::string small_pink_snake_path = "../../assets/snakes/pink-small-snake.png";
+    std::string small_green_snake_path = "../../assets/snakes/green-small-snake.png";
+    std::string small_pharaon_snake_path = "../../assets/snakes/snake-paharaon.png";
 };

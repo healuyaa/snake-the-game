@@ -1,10 +1,9 @@
 #include "LoadTextures.hpp"
 #include "HeroSprite.hpp"
 #include "FoodSprite.hpp"
+#include "SmallSnakesSprite.hpp"
 
 #include <vector>
-
-#define SPEEDVOLUMESNAKE 0.05 
 
 enum class GameState {
     MainMenu,
@@ -145,38 +144,54 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
         return;
     }
 
+    //---------------------init textures and sprites---------------------
     Textures textures;
     Snake snake;
     Food food;
+    SmallSnakes small_snakes;
 
-    HeroMoving moves;
-    RectHero rects_hero;
+    HeroSprite hero;
     FoodSprites food_s;
+    SmallPinkSnakeSprite pink_snake;
+    SmallGreenSnakeSprite green_snake;
+    SmallPharaonSnakeSprite pharaon_snake;
 
     sf::Sprite sprite_hero;
     sf::Sprite sprite_food;
+    sf::Sprite sprite_pink_snake;
+    sf::Sprite sprite_green_snake;
+    sf::Sprite sprite_pharaon_snake;
+    //---------------------init textures and sprites---------------------
 
-    // std::vector<sf::Sprite> snakes;
-
+    //---------------------loaders textures---------------------
     snake.LoadTexturesFromFile(textures);
     snake.SmoothTextures(textures);
 
     food.LoadTexturesFromFile(textures);
     food.SmoothTextures(textures);
 
-    moves.InitsRects(rects_hero);
-    moves.LoadHeroSprite(sprite_hero, textures);
+    small_snakes.LoadTexturesFromFile(textures);
+    small_snakes.SmoothTextures(textures);
+    //---------------------loaders textures---------------------
+
+
+    //---------------------loaders sprites + smooth---------------------
+    hero.LoadHeroSprite(sprite_hero, textures);
 
     food_s.InitSizes(window.getSize().x, window.getSize().y);
     food_s.LoadFoodSprite(sprite_food, textures);
 
-    // snakes.push_back(sprite_hero);
+    pink_snake.LoadHeroSprite(sprite_pink_snake, textures);
+    green_snake.LoadHeroSprite(sprite_green_snake, textures);
+    pharaon_snake.LoadHeroSprite(sprite_pharaon_snake, textures);
+    //---------------------loaders sprites + smooth---------------------
 
 
-
+    //---------------------init Direction---------------------
     Direction currentDirection = None;
     int current_frame = 0;
-    bool last_dir_left = false;    
+    bool last_dir_left = false;
+    //---------------------init Direction---------------------
 
     while (window.isOpen()) {
         sf::Event event;
@@ -196,50 +211,48 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
                 } else if (event.key.code == sf::Keyboard::D) {
                     currentDirection = Right;
                 }
-            } else if (event.type == sf::Event::KeyReleased) {
-                if (event.key.code == sf::Keyboard::W && currentDirection == Up) {
-                    currentDirection = None;
-                } else if (event.key.code == sf::Keyboard::S && currentDirection == Down) {
-                    currentDirection = None;
-                } else if (event.key.code == sf::Keyboard::A && currentDirection == Left) {
-                    currentDirection = None;
-                } else if (event.key.code == sf::Keyboard::D && currentDirection == Right) {
-                    currentDirection = None;
-                }
-            }          
+            }  
         }
 
         if (currentDirection == Left) {
-            moves.ChangeSprite(sprite_hero, rects_hero.rect_a);
-            moves.MoveLeft(sprite_hero);
-
+            hero.MoveLeft(sprite_hero);
             last_dir_left = true;
         } else if (currentDirection == Right) {
-            moves.ChangeSprite(sprite_hero, rects_hero.rect_d);
-            moves.MoveRight(sprite_hero);
-
+            hero.MoveRight(sprite_hero);        
             last_dir_left = false;
         } else if (currentDirection == Up) {
-            moves.MoveUp(sprite_hero);
+            hero.MoveUp(sprite_hero);            
         } else if (currentDirection == Down) {
-            moves.MoveDown(sprite_hero);
+            hero.MoveDown(sprite_hero);
         }
 
-        if(last_dir_left && currentDirection == None) {
-            if(current_frame % 7 == 0)
-                moves.CircleSpritesA(sprite_hero);
-        } else if(!last_dir_left && currentDirection == None) {
-            if(current_frame % 7 == 0)
-                moves.CircleSpritesD(sprite_hero);
+        if(last_dir_left) {
+            if(current_frame % 4 == 0) 
+                hero.CircleSpritesA(sprite_hero);
+
+            if(current_frame % 15 == 0)
+                pink_snake.CircleSpritesA(sprite_pink_snake);
+
+            if(current_frame % 6 == 0)
+                green_snake.CircleSpritesA(sprite_green_snake);
+
+            if(current_frame % 5 == 0)
+                pharaon_snake.CircleSpritesA(sprite_pharaon_snake);
+        } else if(!last_dir_left) {
+            if(current_frame % 4 == 0)
+                hero.CircleSpritesD(sprite_hero);      
+
+            if(current_frame % 15 == 0)
+                pink_snake.CircleSpritesD(sprite_pink_snake);
+
+            if(current_frame % 6 == 0)
+                green_snake.CircleSpritesD(sprite_green_snake);
+
+            if(current_frame % 5 == 0)
+                pharaon_snake.CircleSpritesD(sprite_pharaon_snake);
         }
 
-        if(food_s.CheckCollision(sprite_hero, sprite_food)) {
-            sf::Sprite new_snake = sprite_hero;
-            
-            // new_snake.setPosition(sprite_hero.getPosition().x + 40, sprite_hero.getPosition().y + 10);
-            // new_snake.setScale(0.77, 0.77);
-            // snakes.push_back(new_snake);
-
+        if(food_s.CheckCollision(sprite_hero, sprite_food)) {          
             food_s.LoadFoodSprite(sprite_food, textures);
         }
 
@@ -248,10 +261,9 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
 
         window.draw(sprite_hero);
         window.draw(sprite_food);
-
-        // for(auto& a: snakes) {
-        //     window.draw(a);
-        // }
+        window.draw(sprite_pink_snake);
+        window.draw(sprite_green_snake);
+        window.draw(sprite_pharaon_snake);
 
         window.display();
 

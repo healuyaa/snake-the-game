@@ -1,46 +1,32 @@
 #include "SFML/Graphics.hpp"
 
-struct RectHero {
-    sf::IntRect rect_d;
-    sf::IntRect rect_a;
-};
-
-class HeroMoving {
+class HeroSprite {
     public:
 
     void LoadHeroSprite(sf::Sprite& sprite, Textures& textures) {
-        sprite.setTexture(textures.snake_mooves);
+        sprite.setTexture(textures.snake);
         sf::IntRect textureRect(POSDX, POSDY, SIZESPRITES, SIZESPRITES);
         sprite.setTextureRect(textureRect);
 
         sprite.setPosition(startPosX, startPosY);
     }
 
-    void InitsRects(RectHero& rects) {
-        rects.rect_d = sf::IntRect(POSDX + iter_sprites_d * SIZESPRITES, POSDY, SIZESPRITES, SIZESPRITES);
-        rects.rect_a = sf::IntRect(POSAX - iter_sprites_a * SIZESPRITES, POSAY, SIZESPRITES, SIZESPRITES);
-    }
-
-    void ChangeSprite(sf::Sprite& sprite, const sf::IntRect& rect) {
-        sprite.setTextureRect(rect);
-    }
-
     void CircleSpritesA(sf::Sprite& sprite) {
-        if(iter_sprites_a == MAXEQUAL)
-            iter_sprites_a = 0;
+        if(iter_sprites == MAXEQUAL)
+            iter_sprites = 1;
 
-        sprite.setTextureRect(sf::IntRect(POSAX - iter_sprites_a * SIZESPRITES, 
+        sprite.setTextureRect(sf::IntRect(POSAX - iter_sprites * SIZESPRITES, 
                                             POSAY, SIZESPRITES, SIZESPRITES));
-        ++iter_sprites_a;
+        ++iter_sprites;
     }
 
     void CircleSpritesD(sf::Sprite& sprite) {
-        if(iter_sprites_d == MAXEQUAL)
-            iter_sprites_d = 0;
+        if(iter_sprites == MAXEQUAL)
+            iter_sprites = 1;
 
-        sprite.setTextureRect(sf::IntRect(POSDX + iter_sprites_d * SIZESPRITES, 
+        sprite.setTextureRect(sf::IntRect(POSDX + iter_sprites * SIZESPRITES, 
                                             POSDY, SIZESPRITES, SIZESPRITES));
-        ++iter_sprites_d;
+        ++iter_sprites;
     }
 
     void MoveUp(sf::Sprite& sprite) {
@@ -61,5 +47,5 @@ class HeroMoving {
 
     private:
     int POSDX = 0, POSDY = 160, POSAX = 880, POSAY = 320, SIZESPRITES = 80, startPosX = 500, startPosY = 500, MAXEQUAL = 12;
-    int iter_sprites_a = 0, iter_sprites_d = 0;
+    int iter_sprites = 1;
 };
