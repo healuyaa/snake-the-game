@@ -2,6 +2,7 @@
 #include "HeroSprite.hpp"
 #include "FoodSprite.hpp"
 #include "SmallSnakesSprite.hpp"
+#include "OtherSnakes.hpp"
 
 #include <vector>
 
@@ -58,6 +59,7 @@ void showMainMenu(sf::RenderWindow& window, GameState& current_state) {
         return;
     }
 
+    //---------------------Init text Main menu---------------------
     sf::Text title_text("Snake The Game", font, 150);
     title_text.setFillColor(sf::Color::White);
     title_text.setStyle(sf::Text::Bold);
@@ -74,7 +76,9 @@ void showMainMenu(sf::RenderWindow& window, GameState& current_state) {
     play_text.setPosition((window.getSize().x - play_text.getLocalBounds().width) / 2, 550);
     settings_text.setPosition((window.getSize().x - settings_text.getLocalBounds().width) / 2, 750);
     exit_text.setPosition((window.getSize().x - exit_text.getLocalBounds().width) / 2, 850);
+    //---------------------Init text Main menu---------------------
 
+    //---------------------Init icons Main menu---------------------
     Textures textures;
     Icons icons;
 
@@ -86,6 +90,7 @@ void showMainMenu(sf::RenderWindow& window, GameState& current_state) {
     sprite_github.setPosition(0, window.getSize().y - 25);
     sprite_steam.setPosition(30, window.getSize().y - 25);
     sprite_discord.setPosition(60, window.getSize().y - 25);
+    //---------------------Init icons Main menu---------------------
 
     while (window.isOpen()) {
         sf::Event event;
@@ -102,6 +107,7 @@ void showMainMenu(sf::RenderWindow& window, GameState& current_state) {
                 }
             }
 
+            //---------------------Event Mouse---------------------
             if (event.type == sf::Event::MouseButtonPressed) {
                 sf::Vector2f mouse_pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
                 if (play_text.getGlobalBounds().contains(mouse_pos)) {
@@ -121,8 +127,10 @@ void showMainMenu(sf::RenderWindow& window, GameState& current_state) {
                     
                 }
             }
+            //---------------------Event Mouse---------------------
         }
 
+        //---------------------Draw objects---------------------
         window.clear(sf::Color(0, 128, 0));
 
         window.draw(title_text);
@@ -135,6 +143,7 @@ void showMainMenu(sf::RenderWindow& window, GameState& current_state) {
         window.draw(sprite_discord);
 
         window.display();
+        //---------------------Draw objects---------------------
     }
 }
 
@@ -149,18 +158,21 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
     Snake snake;
     Food food;
     SmallSnakes small_snakes;
+    OtherSnake barrel_snake;
 
     HeroSprite hero;
     FoodSprites food_s;
     SmallPinkSnakeSprite pink_snake;
     SmallGreenSnakeSprite green_snake;
     SmallPharaonSnakeSprite pharaon_snake;
+    OtherBarelSnake barrel_snake_s;
 
     sf::Sprite sprite_hero;
     sf::Sprite sprite_food;
     sf::Sprite sprite_pink_snake;
     sf::Sprite sprite_green_snake;
     sf::Sprite sprite_pharaon_snake;
+    sf::Sprite sprite_barrel_snake;
     //---------------------init textures and sprites---------------------
 
     //---------------------loaders textures---------------------
@@ -172,8 +184,10 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
 
     small_snakes.LoadTexturesFromFile(textures);
     small_snakes.SmoothTextures(textures);
-    //---------------------loaders textures---------------------
 
+    barrel_snake.LoadTexturesFromFile(textures);
+    barrel_snake.SmoothTextures(textures);
+    //---------------------loaders textures---------------------
 
     //---------------------loaders sprites + smooth---------------------
     hero.LoadHeroSprite(sprite_hero, textures);
@@ -184,8 +198,9 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
     pink_snake.LoadHeroSprite(sprite_pink_snake, textures);
     green_snake.LoadHeroSprite(sprite_green_snake, textures);
     pharaon_snake.LoadHeroSprite(sprite_pharaon_snake, textures);
-    //---------------------loaders sprites + smooth---------------------
 
+    barrel_snake_s.LoadHeroSprite(sprite_barrel_snake, textures);
+    //---------------------loaders sprites + smooth---------------------
 
     //---------------------init Direction---------------------
     Direction currentDirection = None;
@@ -200,6 +215,7 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
                 window.close();
                 return;
             }
+
             //---------------------Event Keyboard---------------------
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::W) {
@@ -229,7 +245,7 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
         }
         //---------------------Move hero---------------------
 
-        //---------------------Animation Objects---------------------
+        //---------------------Animation Objects with diffrent sides---------------------
         if(last_dir_left) {
             if(current_frame % 4 == 0) 
                 hero.CircleSpritesA(sprite_hero);
@@ -242,9 +258,10 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
 
             if(current_frame % 5 == 0)
                 pharaon_snake.CircleSpritesA(sprite_pharaon_snake);
+
         } else if(!last_dir_left) {
             if(current_frame % 4 == 0)
-                hero.CircleSpritesD(sprite_hero);      
+                hero.CircleSpritesD(sprite_hero);
 
             if(current_frame % 15 == 0)
                 pink_snake.CircleSpritesD(sprite_pink_snake);
@@ -254,8 +271,14 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
 
             if(current_frame % 5 == 0)
                 pharaon_snake.CircleSpritesD(sprite_pharaon_snake);
+
         }
-        //---------------------Animation Objects---------------------
+        //---------------------Animation Objects with diffrent sides---------------------
+
+        //---------------------Animation Objects with static sides---------------------
+        if(current_frame % 5 == 0)
+            barrel_snake_s.CheckDistanceSprite(sprite_hero ,sprite_barrel_snake);
+        //---------------------Animation Objects with static sides---------------------
 
         //---------------------Collision hero with food---------------------
         if(food_s.CheckCollision(sprite_hero, sprite_food)) {          
@@ -267,15 +290,19 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
         window.clear(sf::Color(0, 128, 0));
 
         window.draw(sprite_hero);
+
         window.draw(sprite_food);
+
         window.draw(sprite_pink_snake);
         window.draw(sprite_green_snake);
         window.draw(sprite_pharaon_snake);
 
+        window.draw(sprite_barrel_snake);
+
         window.display();
         //---------------------Draw objects---------------------
 
-        current_frame == 49 ? current_frame = 0 : current_frame++; // update animations timer
+        current_frame == 250 ? current_frame = 0 : current_frame++; // update animations timer
     }
 }
 
@@ -305,10 +332,12 @@ void showSettings(sf::RenderWindow& window, GameState& current_state) {
             }
         }
 
+        //---------------------Draw objects---------------------
         window.clear(sf::Color(0, 128, 0));
 
         window.draw(settingsText);
 
         window.display();
+        //---------------------Draw objects---------------------
     }
 }

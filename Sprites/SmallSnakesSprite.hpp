@@ -40,7 +40,6 @@ class SmallSnakesSpritesClass {
     virtual void CircleSpritesA(sf::Sprite& sprite) = 0;
     virtual void CircleSpritesD(sf::Sprite& sprite) = 0;
 };
-
 class SmallPinkSnakeSprite : public SmallSnakesSpritesClass {
     public:
     void LoadHeroSprite(sf::Sprite& sprite, Textures& textures) override {

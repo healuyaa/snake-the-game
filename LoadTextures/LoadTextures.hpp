@@ -14,6 +14,8 @@ struct Textures {
     sf::Texture small_pink_snake;
     sf::Texture small_green_snake;
     sf::Texture small_pharaon_snake;
+
+    sf::Texture barrel_snake;
 };
 
 class ILoader {
@@ -117,4 +119,21 @@ class SmallSnakes : public ILoader {
     std::string small_pink_snake_path = "../../assets/snakes/pink-small-snake.png";
     std::string small_green_snake_path = "../../assets/snakes/green-small-snake.png";
     std::string small_pharaon_snake_path = "../../assets/snakes/snake-paharaon.png";
+};
+
+class OtherSnake : public ILoader{
+    public:
+    void LoadTexturesFromFile(Textures& textures) override {
+        if(!textures.barrel_snake.loadFromFile(barrel_snake_path)) {
+            std::cout << "Err load icon: barrel_snake\n";
+            return;
+        }
+    }
+
+    void SmoothTextures(Textures& textures) override {
+        textures.barrel_snake.setSmooth(true);
+    }
+
+    private:
+    std::string barrel_snake_path = "../../assets/snakes/barrel-snake.png";
 };
