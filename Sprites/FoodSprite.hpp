@@ -1,6 +1,5 @@
 #include <random>
 #include <utility>
-
 #include "SFML/Graphics.hpp"
 
 class FoodSprites {
@@ -14,6 +13,7 @@ class FoodSprites {
         sprite.setTexture(textures.food);
         sf::IntRect textureRect(POSX + RandomSprite().first * SIZESPRITES, POSY + RandomSprite().second * SIZESPRITES, SIZESPRITES, SIZESPRITES);
         sprite.setTextureRect(textureRect);
+        sprite.setScale(1.2f, 1.2f);
 
         sprite.setPosition(RandomSprite(x_size, y_size).first, RandomSprite(x_size, y_size).second);
     }
@@ -32,8 +32,8 @@ class FoodSprites {
         std::random_device rd;
         std::mt19937 gen(rd());
 
-        std::uniform_int_distribution<int> dist_x(0, x - 100);
-        std::uniform_int_distribution<int> dist_y(0, y - 100);
+        std::uniform_int_distribution<int> dist_x(0, x - 400);
+        std::uniform_int_distribution<int> dist_y(0, y - 400);
 
         return std::make_pair(dist_x(gen), dist_y(gen));
     }

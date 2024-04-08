@@ -7,6 +7,7 @@ class HeroSprite {
         sprite.setTexture(textures.snake);
         sf::IntRect textureRect(POSDX, POSDY, SIZESPRITES, SIZESPRITES);
         sprite.setTextureRect(textureRect);
+        sprite.setScale(1.2f, 1.2f);
 
         sprite.setPosition(startPosX, startPosY);
     }
@@ -46,6 +47,6 @@ class HeroSprite {
     }
 
     private:
-    int POSDX = 0, POSDY = 160, POSAX = 880, POSAY = 320, SIZESPRITES = 80, startPosX = 500, startPosY = 500, MAXEQUAL = 12;
+    int POSDX = 0, POSDY = 160, POSAX = 880, POSAY = 320, SIZESPRITES = 80, startPosX = 2006, startPosY = 1128, MAXEQUAL = 12;
     int iter_sprites = 1;
 };

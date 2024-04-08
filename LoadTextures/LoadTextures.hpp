@@ -1,6 +1,8 @@
-#include <iostream>
-
+#include <vector>
 #include "SFML/Graphics.hpp"
+
+#define NUMBEROFBARRELS 10
+#define NUMBERSTATESLIFEBAR 11
 
 struct Textures {
     sf::Texture github_icon;
@@ -15,7 +17,12 @@ struct Textures {
     sf::Texture small_green_snake;
     sf::Texture small_pharaon_snake;
 
-    sf::Texture barrel_snake;
+    std::vector<sf::Texture> barrels09;
+
+    std::vector<sf::Texture> life_bar_states;
+
+    sf::Texture background;
+    sf::Texture background_errors;
 };
 
 class ILoader {
@@ -27,20 +34,14 @@ class ILoader {
 class Icons : public ILoader {
     public:
     void LoadTexturesFromFile(Textures &textures) override {
-        if (!textures.github_icon.loadFromFile(github_icon_path)) {
-            std::cout << "Err load icon: github\n";
+        if (!textures.github_icon.loadFromFile(github_icon_path))
             return;
-        }
 
-        if (!textures.steam_icon.loadFromFile(steam_icon_path)) {
-            std::cout << "Err load icon: steam\n";
+        if (!textures.steam_icon.loadFromFile(steam_icon_path))
             return;
-        }
 
-        if (!textures.discord_icon.loadFromFile(discord_icon_path)) {
-            std::cout << "Err load icon: discord\n";
+        if (!textures.discord_icon.loadFromFile(discord_icon_path))
             return;
-        }
     }
 
     void SmoothTextures(Textures &textures) override {
@@ -58,10 +59,8 @@ class Icons : public ILoader {
 class Snake : public ILoader {
     public:
     void LoadTexturesFromFile(Textures& textures) override {
-        if(!textures.snake.loadFromFile(snakes_path)) {
-            std::cout << "Err load icon: snake_moove\n";
+        if(!textures.snake.loadFromFile(snakes_path))
             return;
-        }
     }
 
     void SmoothTextures(Textures &textures) override {
@@ -76,10 +75,8 @@ class Food : public ILoader {
     public:
 
     void LoadTexturesFromFile(Textures& textures) override {
-        if(!textures.food.loadFromFile(food_path)) {
-            std::cout << "Err load icon: food\n";
+        if(!textures.food.loadFromFile(food_path))
             return;
-        }
     }
 
     void SmoothTextures(Textures &textures) override {
@@ -93,20 +90,14 @@ class Food : public ILoader {
 class SmallSnakes : public ILoader {
     public:
     void LoadTexturesFromFile(Textures& textures) override {
-        if(!textures.small_pink_snake.loadFromFile(small_pink_snake_path)) {
-            std::cout << "Err load icon: small_pink_snake\n";
+        if(!textures.small_pink_snake.loadFromFile(small_pink_snake_path))
             return;
-        }
 
-        if(!textures.small_green_snake.loadFromFile(small_green_snake_path)) {
-            std::cout << "Err load icon: small_green_snake\n";
+        if(!textures.small_green_snake.loadFromFile(small_green_snake_path))
             return;
-        }
 
-        if(!textures.small_pharaon_snake.loadFromFile(small_pharaon_snake_path)) {
-            std::cout << "Err load icon: small_pharaon_snake\n";
+        if(!textures.small_pharaon_snake.loadFromFile(small_pharaon_snake_path))
             return;
-        }
     }
 
     void SmoothTextures(Textures& textures) override {
@@ -121,19 +112,74 @@ class SmallSnakes : public ILoader {
     std::string small_pharaon_snake_path = "../../assets/snakes/snake-paharaon.png";
 };
 
-class OtherSnake : public ILoader{
+class OtherSnake : public ILoader {
     public:
     void LoadTexturesFromFile(Textures& textures) override {
-        if(!textures.barrel_snake.loadFromFile(barrel_snake_path)) {
-            std::cout << "Err load icon: barrel_snake\n";
-            return;
+        size_t i = 0;
+        while(i < NUMBEROFBARRELS) {
+            sf::Texture temp;
+            temp.loadFromFile(barrel_snake_path);
+            textures.barrels09.push_back(temp);
+            ++i;
         }
     }
 
     void SmoothTextures(Textures& textures) override {
-        textures.barrel_snake.setSmooth(true);
+        for(size_t i{0}; i < NUMBEROFBARRELS; ++i) {
+            textures.barrels09[i].setSmooth(true);
+        }
     }
 
     private:
     std::string barrel_snake_path = "../../assets/snakes/barrel-snake.png";
+};
+
+class LifeBar : public ILoader {
+    public:
+    void LoadTexturesFromFile(Textures& textures) override {
+        for(size_t i{0}; i < NUMBERSTATESLIFEBAR; ++i) {
+            sf::Texture temp;
+            temp.loadFromFile(lifebar_path + std::to_string(NUMBERSTATESLIFEBAR - i - 1) + ".png");
+            textures.life_bar_states.push_back(temp);
+        }
+    }
+
+    void SmoothTextures(Textures& textures) override {
+        for(auto& lifebar_iter: textures.life_bar_states) {
+            lifebar_iter.setSmooth(true);
+        }
+    }
+
+    private:
+    std::string lifebar_path = "../../assets/lifebar/VIDA_";
+};
+
+class Background : public ILoader {
+    public:
+    void LoadTexturesFromFile(Textures& textures) override {
+        if(!textures.background.loadFromFile(background_path))
+            return;
+    }
+
+    void SmoothTextures(Textures& textures) override {
+        textures.background.setSmooth(true);
+    }
+
+    private:
+    std::string background_path = "../../assets/background/background.jpg";
+};
+
+class BackgroundErrors : public ILoader {
+    public:
+    void LoadTexturesFromFile(Textures& textures) override {
+        if(!textures.background_errors.loadFromFile(background_path))
+            return;
+    }
+
+    void SmoothTextures(Textures& textures) override {
+        textures.background_errors.setSmooth(true);
+    }
+
+    private:
+    std::string background_path = "../../assets/background/background-errors.png";
 };
