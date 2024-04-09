@@ -10,7 +10,7 @@ set(LOAD_SPRITES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Sprites")
 
 add_executable(snake-the-game snake-the-game.cpp)
 
-target_link_libraries(snake-the-game sfml-graphics sfml-window sfml-system)
+target_link_libraries(snake-the-game sfml-graphics sfml-window sfml-system sfml-audio)
 
 include_directories(${LOAD_TEXTURES_DIR})
 include_directories(${LOAD_SPRITES_DIR})

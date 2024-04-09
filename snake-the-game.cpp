@@ -11,6 +11,8 @@
 #include <iomanip>
 #include <iostream>
 
+#include "SFML/Audio.hpp"
+
 enum class GameState {
     MainMenu,
     Settings, 
@@ -209,6 +211,22 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
     sf::Sprite background_errors_draw;
     //---------------------init textures and sprites---------------------
 
+    //---------------------Sound---------------------
+    sf::SoundBuffer buffer_kus;
+    if(!buffer_kus.loadFromFile("../../assets/sound/apple-kus.ogg"));
+
+    sf::Sound sound_apple_kus;
+    sound_apple_kus.setBuffer(buffer_kus);
+    sound_apple_kus.setVolume(20);
+
+    sf::SoundBuffer buffer_trombon;
+    if(!buffer_trombon.loadFromFile("../../assets/sound/trombon-sad.ogg"));
+
+    sf::Sound sound_sad_trombon;
+    sound_sad_trombon.setBuffer(buffer_trombon);
+    sound_sad_trombon.setVolume(5);
+    //---------------------Sound---------------------
+
     //---------------------loaders textures + smooth---------------------
     snake.LoadTexturesFromFile(textures);
     snake.SmoothTextures(textures);
@@ -286,6 +304,7 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
+                sound_apple_kus.~Sound();
                 window.close();
                 return;
             }
@@ -403,6 +422,7 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
 
         //---------------------Collision hero with food---------------------
         if(food_s.CheckCollision(sprite_hero, sprite_food)) {
+            sound_apple_kus.play();
             food_s.LoadFoodSprite(sprite_food, textures);
 
             ++eaten_food;
@@ -410,7 +430,7 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
 
             score += std::round(currency_food * increased_score);
 
-            ((eaten_food % 4 == 0) && (eaten_food != 0)) ? food_enough = true : food_enough; // change here
+            ((eaten_food % 1 == 0) && (eaten_food != 0)) ? food_enough = true : food_enough; // change here
         }
         //---------------------Collision hero with food---------------------
 
@@ -480,14 +500,14 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
         sf::Vector2f pos_hero = sprite_hero.getPosition();
         sf::Vector2f size_hero(sprite_hero.getGlobalBounds().width, sprite_hero.getGlobalBounds().height);
 
-        sf::FloatRect viewport_rect(pos_hero.x, pos_hero.y, size_hero.x + 20, size_hero.y + 20);
+        sf::FloatRect viewport_rect(pos_hero.x, pos_hero.y, size_hero.x, size_hero.y);
 
         if (!viewport_rect.contains(view.getCenter())) {
             sf::Vector2f pos_target(pos_hero.x, pos_hero.y);
             sf::Vector2f pos_current = view.getCenter();
             sf::Vector2f pos_new = sf::Vector2f(
-                lerp(pos_current.x, pos_target.x, 0.07f),
-                lerp(pos_current.y, pos_target.y, 0.07f));
+                lerp(pos_current.x, pos_target.x, 0.1f),
+                lerp(pos_current.y, pos_target.y, 0.1f));
             view.setCenter(pos_new);
             window.setView(view);
         }
@@ -548,6 +568,8 @@ void showPlay(sf::RenderWindow& window, GameState& current_state) {
 
         //---------------------Draw Gameover---------------------
         if(game_over) {
+            sound_sad_trombon.play();
+
             sf::Font font;
             if (!font.loadFromFile("../../assets/fonts/Klyakson.otf"));
             sf::Text game_over_text("GAME OVER", font, 200);
